@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+llama-index
+chromadb
+llama-index-embeddings-huggingface
+llama-index-llms-ollama
+sentence-transformers
