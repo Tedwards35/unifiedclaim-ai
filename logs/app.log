@@ -1,0 +1,12 @@
+2026-03-17 13:53:24,867 INFO app: {'event': 'upload', 'filename': 'EvByOrgTyp (2).pdf', 'docs': './data/docs'}
+2026-03-17 13:54:40,052 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 14:21:43,900 INFO app: {'event': 'upload', 'filename': 'EvByOrgTyp (2).pdf', 'docs': './data/docs'}
+2026-03-17 14:22:31,729 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 14:51:36,491 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 15:08:33,739 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 15:11:10,004 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 15:15:18,708 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 15:20:04,503 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 15:29:35,455 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 15:35:41,492 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-17 15:56:46,068 INFO llama_index.core.indices.loading: Loading all indices.

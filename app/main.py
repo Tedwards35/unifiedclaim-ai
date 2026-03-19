@@ -1,18 +1,19 @@
+import logging, os
 from fastapi import FastAPI
-from pydantic import BaseModel
+from app.api.routes import router
+from app.api.analyze import analyze_router
 
-app = FastAPI(title="UnifiedClaim AI – Day 1")
+# Basic file logging
+os.makedirs("./logs", exist_ok=True)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    handlers=[
+        logging.FileHandler("./logs/app.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
 
-class AskRequest(BaseModel):
-    question: str
-
-@app.get("/status")
-def status():
-    return {"ok": True}
-
-@app.post("/ask")
-def ask(request: AskRequest):
-    return {
-        "received_question": request.question,
-        "message": "Ask endpoint is working"
-    }
+app = FastAPI(title="UnifiedClaim AI – Day 2 (RAG + Upload)")
+app.include_router(router)
+app.include_router(analyze_router)
