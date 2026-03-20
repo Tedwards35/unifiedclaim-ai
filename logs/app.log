@@ -10,3 +10,77 @@
 2026-03-17 15:29:35,455 INFO llama_index.core.indices.loading: Loading all indices.
 2026-03-17 15:35:41,492 INFO llama_index.core.indices.loading: Loading all indices.
 2026-03-17 15:56:46,068 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-18 15:38:01,975 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-18 15:38:04,606 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-18 15:39:41,299 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-18 15:39:41,300 INFO app: {'event': 'ask', 'q': 'Say hello; this is a connectivity test.', 'response_len': 6}
+2026-03-18 15:42:22,833 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-18 15:42:25,364 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-18 15:43:57,988 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-18 15:43:57,989 INFO app: {'event': 'ask', 'q': 'Summarize the uploaded document in 3 bullets using details from it. Include a short quoted phrase from the document in each bullet.', 'response_len': 958}
+2026-03-19 14:10:58,400 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-19 14:11:00,997 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-19 14:12:24,343 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-19 14:12:24,344 INFO app: {'event': 'ask', 'q': 'Summarize one key rule from my uploaded document.', 'response_len': 189}
+2026-03-20 16:13:55,968 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:13:58,601 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:13:58,634 INFO app: {'event': 'ask', 'q': 'What documentation is required when discharging a client from behavioral health services under DBHDD policy?', 'response_len': 14}
+2026-03-20 16:16:07,789 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:16:10,303 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:18:50,537 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:18:53,041 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:18:54,392 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-20 16:18:54,393 INFO app: {'event': 'ask', 'q': 'Say hello; this is a connectivity test.', 'response_len': 57}
+2026-03-20 16:20:31,475 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:20:34,042 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:20:34,056 INFO app: {'event': 'ask', 'q': 'Under DBHDD policy, what documentation elements should be present when discharging a client from behavioral health services?', 'response_len': 14}
+2026-03-20 16:28:51,774 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:28:54,389 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:28:54,414 INFO app: {'event': 'ask', 'q': 'What is the DBHDD test policy?', 'response_len': 14}
+2026-03-20 16:33:23,051 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:33:25,693 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:35:45,389 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:35:47,962 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:36:04,284 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-20 16:36:04,285 INFO app: {'event': 'ask', 'q': 'test policy', 'response_len': 827}
+2026-03-20 16:40:06,168 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:40:08,742 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:40:08,772 INFO app: {'event': 'ask', 'q': 'Under DBHDD policy, what documentation elements should be present when discharging a client from behavioral health services?', 'response_len': 14}
+2026-03-20 16:42:01,321 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:42:03,954 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:42:03,982 INFO app: {'event': 'ask', 'q': 'Under DBHDD policy, what documentation elements should be present when discharging a client from behavioral health services?', 'response_len': 14}
+2026-03-20 16:42:32,729 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:42:35,308 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:42:35,324 INFO app: {'event': 'ask', 'q': 'Under DBHDD policy, what documentation elements should be present when discharging a client from behavioral health services?', 'response_len': 14}
+2026-03-20 16:46:12,684 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:46:15,302 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:46:15,327 INFO app: {'event': 'ask', 'q': 'What are the required documentation elements for discharge under DBHDD behavioral health policy?', 'response_len': 14}
+2026-03-20 16:46:33,138 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:46:35,669 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:46:35,684 INFO app: {'event': 'ask', 'q': 'What documentation requirements are described in the DBHDD provider manual?', 'response_len': 14}
+2026-03-20 16:47:45,660 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:47:48,166 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:47:48,179 INFO app: {'event': 'ask', 'q': 'What documentation requirements are described in the DBHDD provider manual?', 'response_len': 14}
+2026-03-20 16:48:04,097 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 16:48:06,640 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 16:48:06,651 INFO app: {'event': 'ask', 'q': 'What documentation requirements are described in the DBHDD provider manual?', 'response_len': 14}
+2026-03-20 17:02:43,381 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:02:45,945 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 17:04:31,140 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-20 17:04:31,142 INFO app: {'event': 'ask', 'q': 'Under DBHDD policy, what documentation elements should be present when discharging a client from behavioral health services?', 'response_len': 205}
+2026-03-20 17:43:45,811 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:44:42,616 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:47:06,562 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:47:49,827 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:48:46,337 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:51:23,959 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:51:26,587 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 17:53:32,162 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:53:34,658 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 17:53:40,615 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-20 17:54:10,757 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:54:13,295 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 17:55:52,101 INFO llama_index.core.indices.loading: Loading all indices.
+2026-03-20 17:55:54,959 INFO httpx: HTTP Request: POST http://localhost:11434/api/show "HTTP/1.1 200 OK"
+2026-03-20 17:55:56,964 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-20 17:56:00,795 INFO httpx: HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"

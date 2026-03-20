@@ -1,4 +1,35 @@
-﻿import os
+﻿def _policy_check_snippets(index, question: str, max_snippets: int = 3, sources: list[str] | None = None):
+    """Returns up to 3 policy-supporting snippets, preferring DBHDD/CDC/CMS if no sources given."""
+    wanted_sources = sources or ["DBHDD", "CDC", "CMS/NCHS"]  # Prefer these sources by default
+    filter_kwargs = _build_metadata_filters(policy_only=True, sources=wanted_sources)
+    qe = index.as_query_engine(similarity_top_k=6, **filter_kwargs)
+    resp = qe.query(question)
+    items = []
+    for n in getattr(resp, "source_nodes", [])[:max_snippets]:
+        node = getattr(n, "node", None)
+        if not node:
+            continue
+        meta = getattr(node, "metadata", {}) or {}
+        content = node.get_content()[:600] if hasattr(node, "get_content") else ""
+        items.append({
+            "snippet": content,
+            "source": meta.get("source_name", ""),
+            "jurisdiction": meta.get("jurisdiction", ""),
+            "policy_domain": meta.get("policy_domain", ""),
+            "effective_date": meta.get("effective_date", ""),
+            "link": meta.get("link", ""),
+        })
+    return items
+
+def _append_retrieval_log(event: str, payload: dict):
+    """Appends a retrieval event to logs/retrieval_log.jsonl for audit/debug."""
+    os.makedirs("logs", exist_ok=True)
+    rec = {"ts": time.time(), "event": event, **payload}
+    with open("logs/retrieval_log.jsonl", "a", encoding="utf-8") as f:
+        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+import os
+import json
+import time
 import logging
 from typing import Optional
 
@@ -8,6 +39,10 @@ from fastapi.responses import JSONResponse
 from llama_index.llms.ollama import Ollama
 
 from app.models.schemas import AskRequest
+from fastapi import Body
+from typing import Dict, Any, List
+from llama_index.core.vector_stores.types import MetadataFilter, MetadataFilters
+from app.services.source_meta import SourceMeta
 from app.services.rag import get_or_create_index, rebuild_index
 from app.core.config import settings
 from app.services.llm import configure_llm
@@ -27,21 +62,52 @@ def status():
     return {"ok": True}
 
 
+def _build_metadata_filters(policy_only: bool, sources: list[str] | None) -> Dict[str, Any]:
+    filters = []
+    if policy_only:
+        # Filter for policy domain (adjust as needed for your schema)
+        filters.append(MetadataFilter(key="policy_domain", value="behavioral_health/ops"))
+    if sources:
+        for s in sources:
+            filters.append(MetadataFilter(key="source_name", value=s))
+    if not filters:
+        return {}
+    return {"filters": MetadataFilters(filters=filters)}
+
 @router.post("/ask")
-def ask(req: AskRequest):
-    # Ensure LlamaIndex uses local Ollama (prevents OpenAI fallback)
+def ask(req: AskRequest = Body(...)):
+    """Handles policy Q&A with optional metadata filters. Body only; returns friendly message if no content."""
     configure_llm()
-
-    # Load or create the persistent index
     index = get_or_create_index()
-
-    # Bind Ollama explicitly to the query engine
-    llm = Ollama(model=settings.LLM_MODEL, request_timeout=settings.REQUEST_TIMEOUT)
-    qe = index.as_query_engine(similarity_top_k=settings.SIMILARITY_TOP_K, llm=llm)
-
+    filter_kwargs = _build_metadata_filters(policy_only=req.policy_only, sources=req.sources)
+    qe = index.as_query_engine(similarity_top_k=4, **filter_kwargs)
     resp = qe.query(req.question)
-    logger.info({"event": "ask", "q": req.question, "response_len": len(str(resp))})
+
+    # Retrieval logging (audit/debug)
+    _append_retrieval_log("ask", {
+        "question": req.question,
+        "policy_only": req.policy_only,
+        "sources": req.sources,
+        "response_len": len(str(resp)),
+    })
+
+    # Friendly fallback if no content
+    if not str(resp).strip():
+        return {"answer": "I couldn’t retrieve a specific passage for that policy question with the current sources. Try broadening sources, or reindex with additional policy files."}
     return {"answer": str(resp)}
+@router.post("/analyze")
+def analyze(req):
+    # ...existing analysis logic...
+    index = get_or_create_index()
+    # After your existing result dict is built:
+    policy_retrieval_q = (
+        "Which policy or guideline passages are most relevant to documentation and compliance "
+        "for this analysis?"
+    )
+    policy_support = _policy_check_snippets(index, policy_retrieval_q, sources=["DBHDD","CDC"])
+    result = {}  # replace with your actual result dict
+    result["policy_support"] = policy_support
+    return result
 
 
 @router.post("/upload")

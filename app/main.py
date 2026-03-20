@@ -1,3 +1,9 @@
+import os
+from app.core.config import settings
+
+# Startup validation: require ADMIN_API_KEY in production mode for security
+if os.getenv("MODE") == "prod" and not settings.ADMIN_API_KEY:
+    raise RuntimeError("ADMIN_API_KEY is required in production mode.")
 import logging, os
 from fastapi import FastAPI
 from app.api.routes import router
