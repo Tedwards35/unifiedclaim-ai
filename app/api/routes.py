@@ -95,16 +95,26 @@ def ask(req: AskRequest = Body(...)):
     if not str(resp).strip():
         return {"answer": "I couldn’t retrieve a specific passage for that policy question with the current sources. Try broadening sources, or reindex with additional policy files."}
     return {"answer": str(resp)}
+
+from app.models.schemas import AnalyzeRequest
+
+
 @router.post("/analyze")
-def analyze(req):
+def analyze(req: AnalyzeRequest):
+    configure_llm()
     # ...existing analysis logic...
     index = get_or_create_index()
     # After your existing result dict is built:
-    policy_retrieval_q = (
-        "Which policy or guideline passages are most relevant to documentation and compliance "
-        "for this analysis?"
+    policy_query = (
+        "DBHDD discharge or transition planning documentation requirements, "
+        "including discharge summaries, follow-up plans, aftercare, and required records "
+        "when services are terminated or transitioned."
     )
-    policy_support = _policy_check_snippets(index, policy_retrieval_q, sources=["DBHDD","CDC"])
+    policy_support = _policy_check_snippets(
+        index,
+        policy_query,
+        sources=["DBHDD"]
+    )
     result = {}  # replace with your actual result dict
     result["policy_support"] = policy_support
     return result

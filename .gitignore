@@ -8,6 +8,5 @@ __pycache__/
 
 # Local data & indexes
 data/
-logs/ 
-logs/ 
 logs/
+.ignorelogs/
