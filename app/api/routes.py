@@ -110,13 +110,46 @@ def analyze(req: AnalyzeRequest):
         "including discharge summaries, follow-up plans, aftercare, and required records "
         "when services are terminated or transitioned."
     )
+
     policy_support = _policy_check_snippets(
         index,
         policy_query,
         sources=["DBHDD"]
     )
+
+    def _summarize_policy_support(policy_support: list[dict]) -> str:
+        """
+        Create a concise, human-readable summary of policy requirements
+        based on retrieved policy support snippets.
+        """
+        if not policy_support:
+            return "No specific policy excerpts were identified for this scenario."
+
+        bullets = []
+        for item in policy_support:
+            text = item.get("snippet", "").lower()
+            if "discharge summary" in text:
+                bullets.append("Completion of a discharge summary documenting services provided, outcomes, referrals, and discharge disposition.")
+            if "transition" in text or "discharge/transit" in text:
+                bullets.append("Documentation of discharge or transition planning, including follow-up and continuity of care.")
+            if "progress notes" in text:
+                bullets.append("Maintenance of progress notes reflecting services delivered and client participation.")
+            if "signature" in text:
+                bullets.append("Documentation of client and/or guardian participation and required signatures when applicable.")
+
+        if not bullets:
+            return "DBHDD policy requires appropriate documentation at discharge, including summaries and supporting records."
+
+        # Deduplicate while preserving order
+        bullets = list(dict.fromkeys(bullets))
+
+        return "DBHDD discharge documentation requirements include: " + " ".join(bullets)
+
+    policy_summary = _summarize_policy_support(policy_support)
+
     result = {}  # replace with your actual result dict
     result["policy_support"] = policy_support
+    result["policy_summary"] = policy_summary
     return result
 
 
