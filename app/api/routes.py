@@ -143,13 +143,44 @@ def analyze(req: AnalyzeRequest):
         # Deduplicate while preserving order
         bullets = list(dict.fromkeys(bullets))
 
-        return "DBHDD discharge documentation requirements include: " + " ".join(bullets)
+        header = "DBHDD Discharge Documentation Requirements:"
+        formatted = ["• " + b for b in bullets]
+
+        return header + "\n" + "\n".join(formatted)
+
+    def _identify_policy_gaps(policy_support: list[dict], clinical_text: str) -> list[str]:
+        """
+        Identify potential documentation gaps by comparing policy requirements
+        with the provided clinical text.
+        """
+        text = clinical_text.lower()
+        gaps = []
+
+        if any("discharge summary" in ps.get("snippet", "").lower() for ps in policy_support):
+            if "discharge summary" not in text:
+                gaps.append("Discharge summary not explicitly documented.")
+
+        if any("transition" in ps.get("snippet", "").lower() for ps in policy_support):
+            if "follow-up" not in text and "aftercare" not in text and "transition" not in text:
+                gaps.append("Discharge or transition planning documentation is missing or unclear.")
+
+        if any("progress notes" in ps.get("snippet", "").lower() for ps in policy_support):
+            if "progress note" not in text:
+                gaps.append("Progress notes supporting services at discharge are not mentioned.")
+
+        if any("signature" in ps.get("snippet", "").lower() for ps in policy_support):
+            if "signature" not in text:
+                gaps.append("Client and/or guardian participation and required signatures are not documented.")
+
+        return gaps
 
     policy_summary = _summarize_policy_support(policy_support)
+    policy_gaps = _identify_policy_gaps(policy_support, req.text)
 
     result = {}  # replace with your actual result dict
     result["policy_support"] = policy_support
     result["policy_summary"] = policy_summary
+    result["policy_gaps"] = policy_gaps
     return result
 
 
