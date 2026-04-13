@@ -27,6 +27,7 @@ def _append_retrieval_log(event: str, payload: dict):
     rec = {"ts": time.time(), "event": event, **payload}
     with open("logs/retrieval_log.jsonl", "a", encoding="utf-8") as f:
         f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
 import os
 import json
 import time
@@ -46,6 +47,9 @@ from app.services.source_meta import SourceMeta
 from app.services.rag import get_or_create_index, rebuild_index
 from app.core.config import settings
 from app.services.llm import configure_llm
+from app.audits.dbhdd_discharge import DBHDDDischargeAudit
+from app.audits.registry import get_registered_audits
+from app.audits.helpers import _policy_check_snippets, _summarize_policy_support, _identify_policy_gaps, _build_metadata_filters
 
 router = APIRouter()
 logger = logging.getLogger("app")
@@ -62,17 +66,7 @@ def status():
     return {"ok": True}
 
 
-def _build_metadata_filters(policy_only: bool, sources: list[str] | None) -> Dict[str, Any]:
-    filters = []
-    if policy_only:
-        # Filter for policy domain (adjust as needed for your schema)
-        filters.append(MetadataFilter(key="policy_domain", value="behavioral_health/ops"))
-    if sources:
-        for s in sources:
-            filters.append(MetadataFilter(key="source_name", value=s))
-    if not filters:
-        return {}
-    return {"filters": MetadataFilters(filters=filters)}
+
 
 @router.post("/ask")
 def ask(req: AskRequest = Body(...)):
@@ -103,84 +97,18 @@ from app.models.schemas import AnalyzeRequest
 def analyze(req: AnalyzeRequest):
     configure_llm()
     # ...existing analysis logic...
-    index = get_or_create_index()
-    # After your existing result dict is built:
-    policy_query = (
-        "DBHDD discharge or transition planning documentation requirements, "
-        "including discharge summaries, follow-up plans, aftercare, and required records "
-        "when services are terminated or transitioned."
-    )
+    audits = get_registered_audits()
 
-    policy_support = _policy_check_snippets(
-        index,
-        policy_query,
-        sources=["DBHDD"]
-    )
+    # For now, we expect exactly one audit result.
+    # This will later expand safely to multiple audits.
+    audit_results = [audit.run(req.text) for audit in audits]
 
-    def _summarize_policy_support(policy_support: list[dict]) -> str:
-        """
-        Create a concise, human-readable summary of policy requirements
-        based on retrieved policy support snippets.
-        """
-        if not policy_support:
-            return "No specific policy excerpts were identified for this scenario."
-
-        bullets = []
-        for item in policy_support:
-            text = item.get("snippet", "").lower()
-            if "discharge summary" in text:
-                bullets.append("Completion of a discharge summary documenting services provided, outcomes, referrals, and discharge disposition.")
-            if "transition" in text or "discharge/transit" in text:
-                bullets.append("Documentation of discharge or transition planning, including follow-up and continuity of care.")
-            if "progress notes" in text:
-                bullets.append("Maintenance of progress notes reflecting services delivered and client participation.")
-            if "signature" in text:
-                bullets.append("Documentation of client and/or guardian participation and required signatures when applicable.")
-
-        if not bullets:
-            return "DBHDD policy requires appropriate documentation at discharge, including summaries and supporting records."
-
-        # Deduplicate while preserving order
-        bullets = list(dict.fromkeys(bullets))
-
-        header = "DBHDD Discharge Documentation Requirements:"
-        formatted = ["• " + b for b in bullets]
-
-        return header + "\n" + "\n".join(formatted)
-
-    def _identify_policy_gaps(policy_support: list[dict], clinical_text: str) -> list[str]:
-        """
-        Identify potential documentation gaps by comparing policy requirements
-        with the provided clinical text.
-        """
-        text = clinical_text.lower()
-        gaps = []
-
-        if any("discharge summary" in ps.get("snippet", "").lower() for ps in policy_support):
-            if "discharge summary" not in text:
-                gaps.append("Discharge summary not explicitly documented.")
-
-        if any("transition" in ps.get("snippet", "").lower() for ps in policy_support):
-            if "follow-up" not in text and "aftercare" not in text and "transition" not in text:
-                gaps.append("Discharge or transition planning documentation is missing or unclear.")
-
-        if any("progress notes" in ps.get("snippet", "").lower() for ps in policy_support):
-            if "progress note" not in text:
-                gaps.append("Progress notes supporting services at discharge are not mentioned.")
-
-        if any("signature" in ps.get("snippet", "").lower() for ps in policy_support):
-            if "signature" not in text:
-                gaps.append("Client and/or guardian participation and required signatures are not documented.")
-
-        return gaps
-
-    policy_summary = _summarize_policy_support(policy_support)
-    policy_gaps = _identify_policy_gaps(policy_support, req.text)
+    primary_result = audit_results[0]
 
     result = {}  # replace with your actual result dict
-    result["policy_support"] = policy_support
-    result["policy_summary"] = policy_summary
-    result["policy_gaps"] = policy_gaps
+    result["policy_support"] = primary_result.policy_support
+    result["policy_summary"] = primary_result.policy_summary
+    result["policy_gaps"] = primary_result.policy_gaps
     return result
 
 
