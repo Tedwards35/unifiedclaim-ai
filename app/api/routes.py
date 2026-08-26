@@ -98,17 +98,23 @@ def analyze(req: AnalyzeRequest):
     configure_llm()
     # ...existing analysis logic...
     audits = get_registered_audits()
-
-    # For now, we expect exactly one audit result.
-    # This will later expand safely to multiple audits.
     audit_results = [audit.run(req.text) for audit in audits]
 
+    # Select the primary audit (for now: first in registry)
     primary_result = audit_results[0]
 
+    # Preserve future expandability
+    all_policy_support = []
+    all_policy_gaps = []
+
+    for result_audit in audit_results:
+        all_policy_support.extend(result_audit.policy_support)
+        all_policy_gaps.extend(result_audit.policy_gaps)
+
     result = {}  # replace with your actual result dict
-    result["policy_support"] = primary_result.policy_support
+    result["policy_support"] = all_policy_support
     result["policy_summary"] = primary_result.policy_summary
-    result["policy_gaps"] = primary_result.policy_gaps
+    result["policy_gaps"] = list(dict.fromkeys(all_policy_gaps))
     return result
 
 
