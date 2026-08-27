@@ -93,8 +93,8 @@ def ask(req: AskRequest = Body(...)):
 from app.models.schemas import AnalyzeRequest
 
 
-@router.post("/analyze")
-def analyze(req: AnalyzeRequest):
+@router.post("/audit")
+def audit(req: AnalyzeRequest):
     configure_llm()
     # ...existing analysis logic...
     audits = get_registered_audits()
